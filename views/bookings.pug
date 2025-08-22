@@ -1,0 +1,47 @@
+extends ./layout.pug 
+
+block styles 
+    link(rel="stylesheet", href="/css/bookings.css")
+
+block contents
+    section.all-operational-bookings 
+        form(action="" method="POST").search-bar
+            input(type="text" placeholder="Narrow down 'Names', 'Enrollment Number', 'Department', 'Book', 'Dates'").search-input
+            input(type="submit" value="Search bookings").submit-btn
+        
+        section.bookings-table
+            if bookings.length < 1
+                .nothing-action 
+                    h1 No bookings yet. Add some books
+                    a(href="/cart").add-btn-action Go to cart 
+
+            else
+                table
+                    thead
+                        tr  
+                            td User 
+                            td User ID
+                            td Department 
+                            td Faculty
+                            td Booked date 
+                            td Return date
+                            td Status 
+                            //- the status can be: pending, late, returned
+                            td Delete booking
+                    tbody
+                        each booking in bookings
+                            tr
+                                td #{booking._doc.username}
+                                td
+                                    a(href="/books") #{booking._doc.userId}
+                                td #{booking._doc.faculty}
+                                td #{booking._doc.department}
+                                td #{booking._doc.bookingDate}
+                                td #{booking._doc.returnDate}
+                                td #{booking._doc.currentDate < booking.returnDate ? "Pending" : booking._doc.currentDate === booking._doc.returnDate ? "Late" : "Returned"}
+                                td.delete-column 
+                                    form(action="/books/bookings/delete-booking" method="POST")
+                                        input(type="hidden" name="_csrf" value=(csrfToken))
+                                        input(type="text" value=(booking._doc._id) name="bookingId").id-element
+                                        input(type="submit" value="Delete book").submit-btn 
+                            

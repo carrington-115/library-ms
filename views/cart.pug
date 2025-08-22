@@ -1,0 +1,51 @@
+extends ./layout.pug 
+
+block styles 
+    link(rel="stylesheet", href="/css/bookings.css")
+
+block contents 
+    section.all-operational-bookings
+        h3 #{cart && "All Cart Items"}
+        section.bookings-table
+            if !cart || cart.length < 1
+                .nothing-action 
+                    h1 Nothing in the Cart. Add somebooks
+                    a(href="/books").add-btn-action Go to Library 
+            else
+                table
+                    thead
+                        tr 
+                            td Book 
+                            td User 
+                            td User ID
+                            td Department 
+                            td Faculty
+                            td Book ISBN
+                            td Booked date 
+                            td Return date
+                            td Delete book 
+                            //- the status can be: pending, late, returned
+                    
+                    tbody
+                        each book in cart
+                            tr
+                                td 
+                                    a(href=(`/books/${book._id}`))  #{book.name}
+                                td #{book.author}
+                                td
+                                    a(href="") #{user.uid}
+                                td #{user.faculty}
+                                td #{user.department}
+                                td #{book.ISBN}
+                                td #{bookDate}
+                                td #{returnDate}
+                                td.delete-column
+                                    form(action="/cart/delete-book" method="POST")
+                                        input(type="hidden" name="_csrf" value=(csrfToken))
+                                        input(type="text" value=(book._id) name="bookId").id-element
+                                        input(type="submit" value="Delete book").submit-btn 
+
+        
+                form(action="/cart/checkout" method="POST").cart-checkout-form 
+                    input(type="hidden" name="_csrf" value=(csrfToken))
+                    input(type="submit" value="Checkout books").checkout-btn

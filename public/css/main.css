@@ -1,0 +1,19 @@
+.loading-container {
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: center;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.loading-container .action-btn{
+    text-decoration: none;
+    padding: 8px 16px;
+    border: none;
+    background-color: white;
+    color: black;
+    font-size: 16px;
+}

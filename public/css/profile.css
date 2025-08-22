@@ -1,0 +1,64 @@
+p, h1, h2, h3, h4{
+    margin: 0;
+    padding: 0;
+}
+
+.main-container{
+    max-width: 100%;
+    padding: 0px 150px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 100px;
+}
+
+.image-container{
+    width: 400px;
+    height: 400px;
+    background-color: rgba(128, 128, 128, 0.5);
+    border-radius: 50px;
+}
+
+.image-container img{
+    width: 100%;
+    object-fit: cover;
+}
+
+.profile-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.profile-container .btn-profile-action{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.btn-profile-action a, .btn-profile-action form .delete-btn{
+    padding: 8px 20px;
+    font-size: 16px;
+    text-decoration: none;
+    background-color: rgba(128, 128, 128, 0.5);
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-profile-action form .delete-btn{
+    border: 1px solid white;
+    background-color: transparent;
+}
+
+.btn-profile-action .edit-btn:hover{
+    background-color: rgba(128, 128, 128, 0.9);
+}
+
+.btn-profile-action form .delete-btn:hover{
+    background-color: rgba(128, 128, 128, 0.5);
+}

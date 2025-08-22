@@ -1,0 +1,24 @@
+extends ./layout.pug 
+
+block styles 
+    link(rel="stylesheet", href="/css/book-register.css")
+
+block contents 
+    section.registration 
+        .hero
+            h4 "Books are our stories in a world where everything is forgoten"
+            p Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda quam nulla cumque hic, dignissimos veniam eos repudiandae temporibus, corrupti, et saepe fuga magni placeat quod nobis velit dicta eaque asperiores?
+        
+        form(action="/books/register" method="POST")
+            input(type="hidden" name="_csrf" value=(csrfToken))
+            input(type="text" placeholder="Book title" name="title")
+            input(type="text" placeholder="Author name" name="author")
+            input(type="url" placeholder="Valid Book Image URL" name="image")
+            .publication-details
+                input(type="date" placeholder="Publication date" name="pub")
+                input(type="text" placeholder="ISBN Number" name="isbn")
+            .book-size
+                input(type="number" placeholder="Total amount" name="size")
+                input(type="number" placeholder="Shelf Number" name="position")
+            textarea(name="description", rows="10", placeholder="Book description").book-description
+            input(type="submit" value="Add this Book")

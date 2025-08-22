@@ -1,0 +1,28 @@
+extends ./layout.pug 
+
+block styles 
+    link(rel="stylesheet", href="/css/profile.css")
+block contents
+    section.main-container 
+        section.image-container
+        section.profile-container
+            h2 Name: #{user.name}
+            h3 Email: #{user.emailId}
+            h3 Faculty: #{user.faculty}
+            h3 Department: #{user.department} 
+            h3 User category: #{user.role} 
+            .btn-profile-action 
+                a(href="/user/edit-profile").edit-btn Edit profile  
+                form(action="/user/delete-profile" method="POST") 
+                    input(type="hidden" name="_csrf" value=(csrfToken))
+                    input(type="submit" value="Delete account").delete-btn
+                form(action="/user/logout" method="POST")
+                    input(type="hidden" name="_csrf" value=(csrfToken))            
+                    input(type="submit" value="Log out").delete-btn  
+                a(href="/user/account/login/reset-password" style=(`
+                    font-size: 14px;
+                    text-decoration: none;
+                    color: white;
+                    padding: 8px 16px;
+                    border: 1px solid white;
+                `)) Edit password  

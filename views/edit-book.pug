@@ -1,0 +1,25 @@
+extends ./layout.pug 
+
+block styles 
+    link(rel="stylesheet", href="/css/book-register.css")
+
+block contents 
+    section.registration 
+        .hero
+            h4 "Books are our stories in a world where everything is forgoten"
+            p Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda quam nulla cumque hic, dignissimos veniam eos repudiandae temporibus, corrupti, et saepe fuga magni placeat quod nobis velit dicta eaque asperiores?
+        
+        form(action="/books/edit" method="POST")
+            input(type="hidden" name="_csrf" value=(csrfToken))
+            input(type="text" name="bookId" value=(book._id)).form-id-field
+            input(type="text" placeholder="Book title" name="title" value=(book.name))
+            input(type="text" placeholder="Author name" name="author" value=(book.author))
+            input(type="url" placeholder="Valid Book Image URL" name="image" value=(book.image))
+            .publication-details
+                input(type="date" placeholder="Publication date" name="pub" value=(book.publishedDate))
+                input(type="text" placeholder="ISBN Number" name="isbn" value=(book.ISBN))
+            .book-size
+                input(type="number" placeholder="Total amount" name="size" value=(book.amountAvailable))
+                input(type="number" placeholder="Shelf Number" name="position" value=(book.shelfNumber))
+            textarea(name="description", rows="10", placeholder="Book description").book-description #{book.description}
+            input(type="submit" value="Update Book")

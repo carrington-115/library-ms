@@ -1,0 +1,32 @@
+extends ./layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/index.css")
+
+block contents
+    section.view-area
+        form(action="" method="POST").search-bar
+            input(type="hidden" name="_csrf" value=(csrfToken))
+            input(type="text" placeholder="Search for 'Introduction to Algorithms'").search-input
+            input(type="submit" value="Search for book").submit-btn
+
+        section.library-view 
+            //- this element is the card for the book
+            h3 Books on Shelf
+            if noBooks
+                section.error-container
+                    h1 No Books in Database
+                    a(href="/books/register").add-book-btn Add new books 
+            else
+                ul.all-books
+                    each book in books
+                        li
+                            a(href=(`/books/${book._id}`))
+                                img(src=(`${book.image}`), alt="library-book")
+                                .book-info 
+                                    h4 #{book.name}
+                                    p.description #{book.description.substring(0, 150)+"........"}
+                                    h5 #{book.author}
+                                    p.rating 4.5/5.0 Rating
+
+                

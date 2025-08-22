@@ -1,0 +1,56 @@
+.registration{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 50px;
+}
+
+.registration .hero{
+    max-width: 30%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.hero h4 {
+    font-size: 36px;
+    margin: 0;
+}
+
+.hero p{
+    font-size: 24px;
+    margin: 0;
+    color: gray;
+}
+
+.registration form{
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: rgba(128, 128, 128, 0.25);
+    padding: 40px 20px;
+}
+
+h4{
+    padding: 0;
+    margin: 0;
+}
+
+.registration form .publication-details, .registration form .book-size{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.registration form .book-description::placeholder {
+    color: gray;
+}
+
+.registration form .form-id-field{
+    display: none;
+}
+
+

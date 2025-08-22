@@ -1,0 +1,33 @@
+{
+  "name": "mongo-db",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Fru Mark",
+  "license": "ISC",
+  "description": "This file is to practice noSQL db and managing them",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^2.2.0",
+    "connect-mongodb-session": "^5.0.0",
+    "cookie-parser": "^1.4.7",
+    "csurf": "^1.11.0",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "express-validator": "^7.2.1",
+    "moment": "^2.30.1",
+    "mongodb": "^6.18.0",
+    "mongoose": "^8.17.0",
+    "nodemailer": "^7.0.5",
+    "nodemailer-sendgrid-transport": "^0.2.0",
+    "nodemon": "^3.1.10",
+    "pug": "^3.0.3"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.1"
+  }
+}

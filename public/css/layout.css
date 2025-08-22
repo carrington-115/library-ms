@@ -1,0 +1,100 @@
+body {
+    background-color: black;
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+}
+
+header{
+    width: screen;
+    display: flex;
+    align-items: center;
+    padding: 20px 150px 12px 150px;
+    justify-content: space-between;
+}
+
+header nav ul{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+header nav ul li{
+    list-style: none;
+}
+
+header .logo-title{
+    text-decoration: none;
+    color: gray;
+}
+
+.logo-title:hover{
+    color: white;
+}
+
+li a{
+    font-size: 16px;
+    color: rgba(255, 255, 255, .7);
+    text-decoration: none;
+}
+
+li a:hover{
+    color: white;
+}
+
+.active{
+    color: white;
+}
+
+header nav ul .booking{
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, .25);
+    text-decoration: none;
+    padding: 7px 12px;
+    border-radius: 2.5px;
+    color: white;
+}
+
+header nav ul .booking:hover {
+    background-color: white;
+    color: black;
+}
+
+.top-header{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0px 30px 0px;
+}
+
+.top-header ul{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.top-header ul li{
+    list-style: none;
+}
+
+.top-header ul li a{
+    text-decoration: none;
+    font-size: 18px;
+    color: rgba(128, 128, 128, 0.5);
+    padding: 10px 25px;
+    border-bottom: 1px solid transparent;
+}
+
+
+.top-header .active-account{
+    color: white;
+    border-bottom-color: white;
+}
+
+.top-header ul li a:hover{
+    color: white;
+}
+

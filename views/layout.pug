@@ -1,0 +1,46 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title #{title}
+        link(rel="stylesheet", href="/css/layout.css")
+        block styles
+    body 
+        if path !== '/'
+            header 
+                a(href="/books").logo-title 
+                    h1 LibraryOS 
+                nav
+                    ul
+                        li
+                            a(href="/books" class=(path === "/books" && "active")) Books
+                        if user && user.role !== "student"   
+                            li
+                                a(href="/books/register" class=(path === "/books/register" && "active")) Register a Book
+                        if user && user.role !== "student"
+                            li
+                                a(href="/books/bookings" class=(path === "/books/bookings" && "active")) Bookings
+                        if (!user)    
+                            li
+                                a(href="/user/account" class=(path === "/user/account" || path === "/user/account/login" && "active")) Account
+                        if user && user.role === "student"
+                            li
+                                a(href="/cart" class=(path === "/cart" && "active")) Cart #{cart ? cart.length ? `(${cart.length})`  : "(0)" : "(Add a book)"}
+                        if user
+                            li
+                                a(href="/user/profile" class=(path==='/user/profile' && "active")) Profile 
+                        
+                        if user && user.role == "student"
+                            form(action="/books/bookings/new-booking" method="GET") 
+                                input(type="Submit" value="New booking").booking
+            
+            if path === "/user/account" || path === "/user/account/login"
+                section.top-header
+                    ul 
+                        li
+                            a(href="/user/account" class=(path === "/user/account" && "active-account")) Sign up 
+                        li
+                            a(href="/user/account/login" class=(path === "/user/account/login" && "active-account")) Login 
+            
+        block contents

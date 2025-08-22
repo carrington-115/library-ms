@@ -1,0 +1,31 @@
+extends ./layout.pug 
+
+block styles 
+    link(rel="stylesheet", href="/css/book.css")
+
+block contents 
+    section.book-container 
+        .image-container
+            img(src=(book.image), alt="")
+            .book-main_content
+                h3 #{book.name}
+                h4 #{book.author}
+                p Published on #{book.publishedDate}
+                p ISBN N0: #{book.ISBN}
+                p #{book.totalAvailable} available on shelf #{book.shelfNumber}
+
+                if user && user.role === "student"
+                    form(action="/books/book-to-cart" method="POST")
+                        input(type="hidden" name="_csrf" value=(csrfToken))
+                        input(type="text" name="bookId" value=(book._id)).invisible-input
+                        input(type="submit" value="Add book to cart").booking-btn 
+        .book-content
+            p #{book.description}
+
+            if user && user.role !== "student"
+                .action-btns 
+                    form(action="/books/delete" method="POST").delete-form
+                        input(type="hidden" name="_csrf" value=(csrfToken))
+                        input(type="text" name="bookId" value=(book._id)).id-input-element
+                        input(type="submit" value="Delete Book").delete-form-btn
+                    a(href=`/books/${book._id}?editMode=true`).edit-book-btn Edit book  

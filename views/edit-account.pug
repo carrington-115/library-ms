@@ -1,0 +1,28 @@
+extends ./layout.pug 
+
+block styles 
+    link(rel="stylesheet", href="/css/book-register.css")
+
+block contents 
+    section.registration 
+        .hero
+            h4 "Books are our stories in a world where everything is forgoten"
+            p Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda quam nulla cumque hic, dignissimos veniam eos repudiandae temporibus, corrupti, et saepe fuga magni placeat quod nobis velit dicta eaque asperiores?
+        
+        form(action="/user/edit-profile" method="POST")
+            input(type="hidden" name="_csrf" value=(csrfToken))
+            input(type="text" placeholder="Username" name="name" value=(user.name))
+            input(type="email" placeholder="Email" name="email" value=(user.emailId))
+            input(type="text" placeholder="User Id" name="uid" value=(user.uid))
+            input(type="text" placeholder="Faculty" name="faculty" value=(user.faculty))
+            input(type="text" placeholder="Department" name="department" value=(user.department))
+            
+            h4 Select your role
+            span 
+                input(type="radio" name="role" value="student" checked=(user.role === "student" && true)) 
+                label(for="role") Student
+            span
+                input(type="radio" name="role" value="staff" checked=(user.role === "staff" && true)) 
+                label(for="role") Staff
+
+            input(type="submit" value="Continue")

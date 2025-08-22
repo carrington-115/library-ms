@@ -1,0 +1,65 @@
+require("dotenv").config();
+const path = require("path");
+const User = require("./models/User");
+const mongoose = require("mongoose");
+const { connection } = require("./util/client");
+const session = require("express-session");
+const MongoDbStore = require("connect-mongodb-session")(session);
+const cookieParser = require("cookie-parser");
+const csrf = require("csurf");
+
+const express = require("express");
+const bodyParser = require("body-parser");
+const Router = require("./router");
+const app = express();
+const Store = new MongoDbStore({
+  uri: connection,
+  collection: "sessions",
+});
+
+app.use(express.static(path.join(__dirname, "public")));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(
+  session({
+    secret: "test secret",
+    resave: false,
+    saveUninitialized: false,
+    store: Store,
+  })
+);
+app.use(csrf({ cookie: true }));
+
+app.set("view engine", "pug");
+app.set("views", "views");
+
+// getting the user login
+app.use((req, res, next) => {
+  User.findById(req.session?.user?._id)
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => console.error(err));
+});
+
+app.use((req, res, next) => {
+  res.locals.user = req?.user;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
+app.use("/", Router);
+app.use((req, res, next) => {
+  res.render("404", { title: "404 error" });
+});
+
+mongoose
+  .connect(connection)
+  .then((result) => {
+    app.listen(process.env.PORT);
+    console.log("Mongoose has connected this app to MongoDB");
+  })
+  .catch((err) => {
+    console.error(err);
+  });

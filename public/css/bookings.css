@@ -1,0 +1,140 @@
+.all-operational-bookings{
+    padding: 0px 150px;
+}
+
+
+.all-operational-bookings .search-bar{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.search-bar .search-input{
+    width: 50%;
+    font-size: 16px;
+    border-radius: 2.5px;
+    border: none;
+    padding: 7px 12px;
+    background-color: rgba(142, 142, 142, 0.3);
+    border: 1px solid gray;
+    color: white;
+}
+
+.search-bar .submit-btn{
+    border: none;
+    font-size: 14px;
+    border-radius: 20px;
+    padding: 5px 12px;
+    background-color: rgba(142, 142, 142, 0.3);
+    color: white;
+}
+
+.submit-btn:hover{
+    background-color: rgba(142, 142, 142, 0.8);
+    cursor: pointer;
+}
+
+.bookings-table {
+    margin: 20px 0px 40px 0px;
+    width: 100%;
+}
+
+.bookings-table table {
+  border-collapse: collapse;
+  width: 100%; 
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+thead {
+  background-color: rgba(142, 142, 142, 0.8);
+  color: black;
+}
+
+tbody tr td a{
+    color: white;
+}
+
+table tbody tr{
+    cursor: pointer;
+}
+
+table tbody tr .delete-column{
+    padding: 12px 15px;
+}
+
+tr .delete-column form .id-element{
+    display: none;
+}
+
+tr .delete-column form .submit-btn{
+    font-size: 16px;
+    border: none;
+    color: red;
+    cursor: pointer;
+    border: 1px solid red;
+    border-radius: 5px;
+    padding: 8px 14px;
+    background-color: transparent;
+}
+
+tr .delete-column form .submit-btn:hover{
+    color: white;
+    background-color: red;
+}
+
+table tbody tr:hover{
+    background-color: rgba(142, 142, 142, 0.3);
+}
+
+.all-operational-bookings .cart-checkout-form{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+.cart-checkout-form .checkout-btn{
+    font-size: 20px;
+    color: white;
+    background-color: rgba(142, 142, 142, 0.3);
+    border: none;
+    border-radius: 5px;
+    padding: 12px 16px;
+    margin: 20px 0px 100px 0px;
+}
+
+
+.checkout-btn:hover{
+    background-color: rgba(142, 142, 142, 0.8);
+    cursor: pointer;
+}
+
+.bookings-table .nothing-action {
+    width: 100%;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.nothing-action .add-btn-action{
+    text-decoration: none;
+    font-size: 24px;
+    padding: 12px 20px;
+    cursor: pointer;
+    color: white;
+    background-color: rgba(142, 142, 142, 0.3); 
+    border-radius: 5px;
+}
+
+.add-btn-action:hover{
+    background-color: rgba(142, 142, 142, 0.8);
+}
