@@ -1,5 +1,5 @@
 const express = require("express");
-const {} = require('express-validator/check')
+const { body } = require("express-validator");
 const Router = express.Router();
 const {
   getAllBooks,
@@ -34,6 +34,7 @@ const {
   postUpdatePassword,
 } = require("./controllers/accountController");
 const isAuth = require("./middleware/is-auth");
+const User = require("./models/User");
 
 Router.get("/", (req, res, next) => {
   res.render("main");
@@ -55,8 +56,44 @@ Router.get("/user/account/login/update-password/:tokenId", getUpdatePassword);
 Router.post("/books/register", postProcessBookRegistration);
 Router.post("/books/delete", postDeleteBook);
 Router.post("/books/edit", postEditBook);
-Router.post("/user/account", postSignUpToAccount);
-Router.post("/user/login", postLoginToAccount);
+Router.post(
+  "/user/account",
+  [
+    body("email")
+      .isEmail()
+      .withMessage("Enter a valid email address")
+      .custom((value, { req }) => {
+        User.findOne({ emailId: req.body.email })
+          .then((user) => {
+            if (user) {
+              return Promise.reject("This email already exist. Try another");
+            }
+          })
+          .catch((err) => console.error(err));
+        return true;
+      }),
+    body("password")
+      .isLength({ min: 6, max: 16 })
+      .withMessage("Enter a valid password minimum 6 and max 16 characters"),
+    body("confirmPassword").custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Your passwords do not match");
+      }
+      return true;
+    }),
+  ],
+  postSignUpToAccount
+);
+Router.post(
+  "/user/login",
+  [
+    body("email").isEmail().withMessage("Enter a valid email address"),
+    body("password", "Enter a valid Password")
+      .isLength({ min: 6, max: 16 })
+      .isEmpty(),
+  ],
+  postLoginToAccount
+);
 Router.post("/user/edit-profile", postEditAccountDetails);
 Router.post("/user/delete-profile", postDeleteAccount);
 Router.post("/books/book-to-cart", postAddBookToCart);

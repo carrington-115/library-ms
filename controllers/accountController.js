@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 const moment = require("moment");
 const crypto = require("crypto");
+const { validationResult } = require("express-validator");
 
 // sendgridTransport.
 const transporter = nodemailer.createTransport(
@@ -170,6 +171,23 @@ exports.postEditAccountDetails = (req, res, next) => {
 exports.postSignUpToAccount = (req, res, next) => {
   const signUpData = req.body; // name, uid, email, faculty, department, role
   const hashedPassword = bcrypt.hash(signUpData.password, 12);
+  const validationErrors = validationResult(req).errors;
+  // console.log(validationErrors.errors);
+  if (validationErrors.length > 0) {
+    const errorMessages = validationErrors.map((error) => {
+      return `${error.path}: ${error.msg}`;
+    });
+    let message = "";
+    errorMessages.forEach((error) => {
+      message = message + " \n " + error;
+    });
+
+    console.log(message);
+    return res.status(422).render("404", {
+      message: message,
+    });
+  }
+
   hashedPassword
     .then((hashpsd) => {
       const LibraryUser = new User({
@@ -240,6 +258,21 @@ exports.postDeleteAccount = (req, res, next) => {
 
 exports.postLoginToAccount = (req, res, next) => {
   const user = req.body;
+  const errorResults = validationResult(req).errors;
+
+  if (errorResults.length > 0) {
+    let message;
+    errorResults
+      .map((err) => {
+        return `${err.path} - ${err.msg}`;
+      })
+      .forEach((error) => {
+        message = message + " \n " + error;
+      });
+
+    return res.status(422).render("404", { message });
+  }
+
   User.findOne({ emailId: user?.email })
     .then((dbUser) => {
       if (!dbUser) {
