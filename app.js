@@ -7,6 +7,7 @@ const session = require("express-session");
 const MongoDbStore = require("connect-mongodb-session")(session);
 const cookieParser = require("cookie-parser");
 const csrf = require("csurf");
+const multer = require("multer");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -17,6 +18,31 @@ const Store = new MongoDbStore({
   collection: "sessions",
 });
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + "-" + file.originalname);
+  },
+});
+
+const handleFileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else cb(null, false);
+};
+
+app.use(
+  multer({
+    storage: fileStorage,
+    fileFilter: handleFileFilter,
+  }).single("image")
+);
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

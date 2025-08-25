@@ -105,11 +105,17 @@ exports.getBookDetails = (req, res, next) => {
 /* The following routes are for managing post requests */
 
 exports.postProcessBookRegistration = (req, res, next) => {
-  const { title, author, image, pub, isbn, size, position, description } =
-    req.body;
+  const { title, author, pub, isbn, size, position, description } = req.body;
+  const image = req.file;
+
+  if (!image) {
+    return res.status(422).render("/books/register");
+  }
+
+  const imageUrl = image.path;
   const newBook = new Book({
     name: title,
-    image: image,
+    image: imageUrl,
     author: author,
     ISBN: isbn,
     publishedDate: pub,
@@ -121,10 +127,12 @@ exports.postProcessBookRegistration = (req, res, next) => {
   newBook
     .save()
     .then((result) => {
-      res.redirect("/books");
+      res.status(201).redirect("/books");
     })
     .catch((err) => {
-      console.error(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
