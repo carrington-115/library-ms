@@ -35,12 +35,24 @@ app.set("views", "views");
 
 // getting the user login
 app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
   User.findById(req.session?.user?._id)
     .then((user) => {
+      if (!user) {
+        const error = new Error();
+        error.httpStatusCode = 500;
+        return next(error);
+      }
       req.user = user;
       next();
     })
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 });
 
 app.use((req, res, next) => {
@@ -50,8 +62,17 @@ app.use((req, res, next) => {
 });
 
 app.use("/", Router);
+
+app.use("/500", (req, res, next) => {
+  res.render("500", { title: "500 error" });
+});
+
+app.use((error, req, res, next) => {
+  res.status(500).render("500", { title: "500 error" });
+});
+
 app.use((req, res, next) => {
-  res.render("404", { title: "404 error" });
+  res.status(500).render("404", { title: "404 error" });
 });
 
 mongoose
