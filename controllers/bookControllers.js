@@ -36,6 +36,8 @@ exports.getProcessBookRegistration = (req, res, next) => {
 exports.getAllBookings = (req, res, next) => {
   if (!req.user) {
     return res.redirect("/user/account");
+  } else if (req.user.role !== "staff") {
+    return res.status(422).redirect("/books");
   }
   Bookings.find()
     .then((bookings) => {
@@ -109,10 +111,10 @@ exports.postProcessBookRegistration = (req, res, next) => {
   const image = req.file;
 
   if (!image) {
-    return res.status(422).render("/books/register");
+    return res.status(422).redirect("/books/register");
   }
 
-  const imageUrl = image.path;
+  const imageUrl = "/" + image.path;
   const newBook = new Book({
     name: title,
     image: imageUrl,
@@ -137,22 +139,22 @@ exports.postProcessBookRegistration = (req, res, next) => {
 };
 
 exports.postEditBook = (req, res, next) => {
-  const {
-    bookId,
-    title,
-    author,
-    image,
-    pub,
-    isbn,
-    size,
-    position,
-    description,
-  } = req.body;
+  const { bookId, title, author, pub, isbn, size, position, description } =
+    req.body;
+  const image = req.file;
+
+  console.log(image);
+
+  if (!image) {
+    return res.status(422).redirect("/books/register");
+  }
+
+  const imageUrl = image.path;
   Book.updateOne(
     { _id: bookId },
     {
       name: title,
-      image: image,
+      image: imageUrl,
       author: author,
       ISBN: isbn,
       publishedDate: pub,
@@ -164,7 +166,11 @@ exports.postEditBook = (req, res, next) => {
     .then((data) => {
       res.redirect(`/books/${bookId}`);
     })
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
+    });
 };
 
 exports.postDeleteBook = (req, res, next) => {

@@ -8,6 +8,7 @@ const MongoDbStore = require("connect-mongodb-session")(session);
 const cookieParser = require("cookie-parser");
 const csrf = require("csurf");
 const multer = require("multer");
+const fs = require("fs");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -20,10 +21,15 @@ const Store = new MongoDbStore({
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
+    const uploadDir = "images/";
+
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir);
+    }
     cb(null, "images");
   },
   filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + "-" + file.originalname);
+    cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname);
   },
 });
 
@@ -40,10 +46,12 @@ const handleFileFilter = (req, file, cb) => {
 app.use(
   multer({
     storage: fileStorage,
+    dest: "images",
     fileFilter: handleFileFilter,
   }).single("image")
 );
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(
@@ -98,7 +106,7 @@ app.use((error, req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  res.status(500).render("404", { title: "404 error" });
+  res.status(404).render("404", { title: "404 error" });
 });
 
 mongoose

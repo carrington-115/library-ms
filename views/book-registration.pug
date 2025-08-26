@@ -9,14 +9,14 @@ block contents
             h4 "Books are our stories in a world where everything is forgoten"
             p Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda quam nulla cumque hic, dignissimos veniam eos repudiandae temporibus, corrupti, et saepe fuga magni placeat quod nobis velit dicta eaque asperiores?
         
-        form(action="/books/register" method="POST" enctype="multipart/form-data")
+        form(action="/books/register/new" method="POST" enctype="multipart/form-data")
             input(type="hidden" name="_csrf" value=(csrfToken))
-            input(type="text" placeholder="Book title" name="title")
-            input(type="text" placeholder="Author name" name="author")
-            input(type="file" placeholder="Upload a book" name="image")
+            input(type="text" placeholder="Book title" name="title" required)
+            input(type="text" placeholder="Author name" name="author" required)
+            input(type="file" placeholder="Upload a book" name="image" required)
             .publication-details
-                input(type="date" placeholder="Publication date" name="pub")
-                input(type="text" placeholder="ISBN Number" name="isbn")
+                input(type="date" placeholder="Publication date" name="pub" required)
+                input(type="text" placeholder="ISBN Number" name="isbn" required)
             .book-size
                 input(type="number" placeholder="Total amount" name="size")
                 input(type="number" placeholder="Shelf Number" name="position")

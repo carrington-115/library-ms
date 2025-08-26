@@ -10,10 +10,11 @@ block contents
             input(type="submit" value="Search bookings").submit-btn
         
         section.bookings-table
+        
             if bookings.length < 1
                 .nothing-action 
-                    h1 No bookings yet. Add some books
-                    a(href="/cart").add-btn-action Go to cart 
+                    h1 No bookings yet. Do some other action
+                    a(href="/books").add-btn-action Go to Books 
 
             else
                 table

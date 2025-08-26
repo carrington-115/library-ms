@@ -32,6 +32,7 @@ const {
   postResetPassword,
   getUpdatePassword,
   postUpdatePassword,
+  getUserOrders,
 } = require("./controllers/accountController");
 const isAuth = require("./middleware/is-auth");
 const User = require("./models/User");
@@ -51,11 +52,40 @@ Router.get("/user/profile", isAuth, getUserProfile);
 Router.get("/user/edit-profile", isAuth, getEditAccountDetails);
 Router.get("/user/account/login/reset-password", getResetPassword);
 Router.get("/user/account/login/update-password/:tokenId", getUpdatePassword);
+Router.get("/user/:userId/orders", getUserOrders);
 
-// post configurations
-Router.post("/books/register", postProcessBookRegistration);
+// Router.post("/books/register", postSomeTest);
+Router.post(
+  "/books/register/new",
+  [
+    body("title", "Enter a valid book name").isLength({ min: 10 }),
+    body("author", "Enter a valid author name")
+      .isEmpty()
+      .isLength({ min: 10, max: 100 }),
+    body("pub")
+      .isEmpty()
+      .isDate()
+      .withMessage("Enter a valid value for the date"),
+    body("isbn", "Enter a valid isbn number").isEmpty().isAlphanumeric().trim(),
+  ],
+  postProcessBookRegistration
+);
 Router.post("/books/delete", postDeleteBook);
-Router.post("/books/edit", postEditBook);
+Router.post(
+  "/books/edit",
+  [
+    body("title", "Enter a valid book name").isLength({ min: 10 }),
+    body("author", "Enter a valid author name")
+      .isEmpty()
+      .isLength({ min: 10, max: 100 }),
+    body("pub")
+      .isEmpty()
+      .isDate()
+      .withMessage("Enter a valid value for the date"),
+    body("isbn", "Enter a valid isbn number").isEmpty().isAlphanumeric().trim(),
+  ],
+  postEditBook
+);
 Router.post(
   "/user/account",
   [
@@ -86,12 +116,12 @@ Router.post(
 );
 Router.post(
   "/user/login",
-  [
-    body("email").isEmail().withMessage("Enter a valid email address"),
-    body("password", "Enter a valid Password")
-      .isLength({ min: 6, max: 16 })
-      .isEmpty(),
-  ],
+  // [
+  //   body("email").isEmail().withMessage("Enter a valid email address"),
+  //   body("password", "Enter a valid Password")
+  //     .isLength({ min: 6, max: 16 })
+  //     .isEmpty(),
+  // ],
   postLoginToAccount
 );
 Router.post("/user/edit-profile", postEditAccountDetails);

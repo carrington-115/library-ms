@@ -8,6 +8,8 @@ exports.getAllCartItems = (req, res, next) => {
 
   if (!user) {
     return res.redirect("/user/account");
+  } else if (req.user.role !== "student") {
+    return res.status(422).redirect("/user/account");
   }
   return User.findById(req?.user?._id)
     .then((user) => {

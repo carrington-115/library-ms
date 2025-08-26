@@ -31,7 +31,11 @@ html(lang="en")
                             li
                                 a(href="/user/profile" class=(path==='/user/profile' && "active")) Profile 
                         
-                        if user && user.role == "student"
+                        if user && user.role === "student"
+                            li
+                                a(href=`/user/${user._id}/orders` class=(path===`/user/${user._id}/orders` && "active")) Orders 
+
+                        if user && user.role == "staff"
                             form(action="/books/bookings/new-booking" method="GET") 
                                 input(type="Submit" value="New booking").booking
             

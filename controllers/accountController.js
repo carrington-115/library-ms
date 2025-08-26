@@ -6,6 +6,7 @@ const sendgridTransport = require("nodemailer-sendgrid-transport");
 const moment = require("moment");
 const crypto = require("crypto");
 const { validationResult } = require("express-validator");
+const Order = require("../models/orders");
 
 // sendgridTransport.
 const transporter = nodemailer.createTransport(
@@ -135,6 +136,33 @@ exports.getUpdatePassword = (req, res, next) => {
     });
 };
 
+exports.getUserOrders = (req, res, next) => {
+  const { userId } = req.params;
+  if (!req.user) {
+    return res.status(422).redirect("/user/account");
+  } else if (req.user.role === "student") {
+    return res.status(422).redirect("/books");
+  } else {
+    return res.status(422).redirect("/books");
+  }
+
+  Order.find({ _id: userId })
+    .then((orders) => {
+      console.log(orders);
+      res.render("orders", {
+        title: `${req.user.name} orders`,
+        path: `/users/${userId}/orders`,
+        orders: orders,
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
+    });
+};
+
 // all the post routes
 
 exports.postEditAccountDetails = (req, res, next) => {
@@ -259,6 +287,7 @@ exports.postDeleteAccount = (req, res, next) => {
 exports.postLoginToAccount = (req, res, next) => {
   const user = req.body;
   const errorResults = validationResult(req).errors;
+  console.log(errorResults);
 
   if (errorResults.length > 0) {
     let message;
