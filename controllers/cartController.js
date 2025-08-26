@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Book = require("../models/Book");
 const moment = require("moment");
 const Bookings = require("../models/Bookings");
+const Order = require("../models/orders");
 
 exports.getAllCartItems = (req, res, next) => {
   const user = req?.user;
@@ -99,14 +100,30 @@ exports.postCheckOutCart = (req, res, next) => {
     department: req?.user?.department,
   });
 
+  // want to make sure that when the items in the cart
+  // checked out the items go the orders
+
   booking
     .save()
     .then((result) => {
-      User.findByIdAndUpdate(req?.user?._id, {
+      const bookId = result._id;
+      const userId = req.user._id;
+      const order = Order({
+        userId,
+        bookId,
+      });
+      order.save();
+      return User.findByIdAndUpdate(req?.user?._id, {
         cart: [],
-      }).then((result) => {
-        res.redirect("/books/bookings");
       });
     })
-    .catch((err) => console.error(err));
+    .then((data) => {
+      console.log(data);
+      return res.redirect("/books");
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };

@@ -1,5 +1,7 @@
 require("dotenv").config();
 const User = require("../models/User");
+const Book = require("../models/Book");
+const Booking = require("../models/Bookings");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
@@ -131,28 +133,70 @@ exports.getUpdatePassword = (req, res, next) => {
           break;
       }
     })
-    .catch((err) => {
-      console.error(err);
-    });
+    .catch((err) => {});
 };
 
 exports.getUserOrders = (req, res, next) => {
   const { userId } = req.params;
   if (!req.user) {
     return res.status(422).redirect("/user/account");
-  } else if (req.user.role === "student") {
-    return res.status(422).redirect("/books");
-  } else {
+  } else if (req.user.role === "staff") {
     return res.status(422).redirect("/books");
   }
 
-  Order.find({ _id: userId })
+  Order.find({ userId: userId })
     .then((orders) => {
-      console.log(orders);
-      res.render("orders", {
-        title: `${req.user.name} orders`,
-        path: `/users/${userId}/orders`,
-        orders: orders,
+      if (orders.length < 1) {
+        return res.render("orders", {
+          title: `${req.user.name} orders`,
+          path: `/users/${userId}/orders`,
+          orders: [],
+        });
+      }
+
+      // make it work for multiple orders
+      const bookingIds = orders.map((order) => {
+        return order.bookId;
+      });
+
+      Booking.find({
+        _id: {
+          $in: bookingIds,
+        },
+      }).then((bookings) => {
+        const allCarts = bookings.map((booking) => {
+          return booking.cart;
+        });
+        // for each cart pull the _id
+        let testSet = [];
+        allCarts.forEach((cart) => {
+          const thisCart = cart.map((c) => {
+            return c._id;
+          });
+          testSet = [...testSet, ...thisCart];
+        });
+
+        Book.find({
+          _id: {
+            $in: testSet,
+          },
+        }).then((allBooks) => {
+          let updatedOrders = allBooks.map((book) => {
+            return {
+              orderId: null,
+              book: book,
+            };
+          });
+          for (let i = 0; i < updatedOrders.length; i++) {
+            updatedOrders[i].orderId = bookingIds[i];
+          }
+
+          return res.render("orders", {
+            title: `${req.user.name} orders`,
+            path: `/users/${userId}/orders`,
+            orders: updatedOrders,
+          });
+        });
       });
     })
     .catch((err) => {

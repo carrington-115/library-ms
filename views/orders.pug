@@ -1,6 +1,43 @@
 extends ./layout.pug  
 
 block styles 
+    link(rel="stylesheet", href="/css/bookings.css")
 
 block contents 
-    h1 Hello world
+    section.all-operational-bookings 
+        section.bookings-table 
+            if orders.length < 1
+                .nothing-action 
+                    h1 No orders yet. Start to order now
+                    a(href="/books").add-btn-action Go to Books
+            
+            else
+                h3 All Orders
+                table
+                    thead
+                        tr  
+                            td BookId 
+                            td Book name
+                            td Author 
+                            td ISBN id
+                            td Published date 
+                            td Get invoice
+                            td Cancel order
+                    tbody
+                        each order in orders
+                            tr
+                                td #{order.orderId}
+                                td #{order.book.name}
+                                td #{order.book.author}
+                                td #{order.book.ISBN}
+                                td #{order.book.publishedDate}
+                                td.delete-column 
+                                    form(action="/books/orders/get-booking-invoice" method="POST")
+                                        input(type="hidden" name="_csrf" value=(csrfToken))
+                                        input(type="text" value=(order.orderId) name="bookingId").id-element
+                                        input(type="submit" value="Get invoice").submit-btn 
+                                td.delete-column 
+                                    form(action="/books/orders/delete-order" method="POST")
+                                        input(type="hidden" name="_csrf" value=(csrfToken))
+                                        input(type="text" value=(order.orderId) name="bookingId").id-element
+                                        input(type="submit" value="Cancel order").submit-btn 
