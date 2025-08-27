@@ -32,10 +32,13 @@ const {
   postResetPassword,
   getUpdatePassword,
   postUpdatePassword,
-  getUserOrders,
 } = require("./controllers/accountController");
 const isAuth = require("./middleware/is-auth");
 const User = require("./models/User");
+const {
+  getUserOrders,
+  postDeleteOrders,
+} = require("./controllers/orderControllers");
 
 Router.get("/", (req, res, next) => {
   res.render("main");
@@ -133,5 +136,6 @@ Router.post("/books/bookings/delete-booking", postHandleDeleteBooking);
 Router.post("/user/logout", postLogout);
 Router.post("/user/account/login/reset-password", postResetPassword);
 Router.post("/user/account/login/update-password", postUpdatePassword);
+Router.post("/books/orders/delete-order", postDeleteOrders);
 
 module.exports = Router;
