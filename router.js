@@ -38,6 +38,7 @@ const User = require("./models/User");
 const {
   getUserOrders,
   postDeleteOrders,
+  postGetOrderInvoice,
 } = require("./controllers/orderControllers");
 
 Router.get("/", (req, res, next) => {
@@ -137,5 +138,6 @@ Router.post("/user/logout", postLogout);
 Router.post("/user/account/login/reset-password", postResetPassword);
 Router.post("/user/account/login/update-password", postUpdatePassword);
 Router.post("/books/orders/delete-order", postDeleteOrders);
+Router.post("/books/orders/get-booking-invoice", postGetOrderInvoice);
 
 module.exports = Router;

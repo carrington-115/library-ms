@@ -1,6 +1,8 @@
 const Book = require("../models/Book");
 const Order = require("../models/orders");
 const Booking = require("../models/Bookings");
+const PDFDoc = require("pdfkit");
+const User = require("../models/User");
 
 exports.getUserOrders = (req, res, next) => {
   const { userId } = req.params;
@@ -25,6 +27,10 @@ exports.getUserOrders = (req, res, next) => {
         return order.bookId;
       });
 
+      const orderIds = orders.map((order) => {
+        return order._id;
+      });
+
       Booking.find({
         _id: {
           $in: bookingIds,
@@ -36,10 +42,7 @@ exports.getUserOrders = (req, res, next) => {
         // for each cart pull the _id
         let testSet = [];
         allCarts.forEach((cart) => {
-          const thisCart = cart.map((c) => {
-            return c._id;
-          });
-          testSet = [...testSet, ...thisCart];
+          testSet = [...testSet, ...cart];
         });
 
         Book.find({
@@ -54,7 +57,7 @@ exports.getUserOrders = (req, res, next) => {
             };
           });
           for (let i = 0; i < updatedOrders.length; i++) {
-            updatedOrders[i].orderId = bookingIds[i];
+            updatedOrders[i].orderId = orderIds[i];
           }
 
           return res.render("orders", {
@@ -72,7 +75,65 @@ exports.getUserOrders = (req, res, next) => {
       return next(err);
     });
 };
+exports.postGetOrderInvoice = (req, res, next) => {
+  const { orderId } = req.body;
+  Order.findById(orderId)
+    .then((order) => {
+      Booking.findById(order.bookId)
+        .then((booking) => {
+          if (!booking) {
+            return next("Booking not found");
+          }
+          const b_cart = booking.cart;
+          User.findById(order.userId)
+            .then((user) => {
+              if (!user) {
+                return next("User not found");
+              }
+              const filename = `Invoice-${Date.now().toLocaleString()}.pdf`;
+              const pdf = new PDFDoc();
+              res.setHeader("Content-Type", "application/pdf");
+              res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="${filename}"`
+              );
+              pdf.fontSize(24).text("Order Invoice", {
+                underline: true,
+              });
+              pdf.text("\n-----------------------------\n");
+              pdf
+                .fontSize(16)
+                .text(`Name: ${user.name} \nEmail: ${user.emailId}\n`);
+              pdf.fontSize(20).text("Books");
+              pdf.text("\n-----------------------------\n");
+              pdf.fontSize(16).text(`Books total: ${b_cart.length}`);
+              pdf.pipe(res);
+              pdf.end();
+            })
+            .catch((err) => {
+              return next(err);
+            });
+        })
+        .catch((err) => {
+          return next(err);
+        });
+    })
+    .catch((err) => {
+      return next(err);
+    });
+  //
+};
 
-exports.postDeleteOrders = (req, res, next) => {};
-
-exports.postGetOrderInvoice = (req, res, next) => {};
+exports.postDeleteOrders = (req, res, next) => {
+  const { orderId } = req.body;
+  Order.findByIdAndDelete(orderId)
+    .then((success) => {
+      if (!success) {
+        return next("This is a server problem. We will resolve it soon");
+      }
+      return res.redirect("/user/" + req.user._id + "/orders");
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};

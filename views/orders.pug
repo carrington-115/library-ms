@@ -16,7 +16,7 @@ block contents
                 table
                     thead
                         tr  
-                            td BookId 
+                            td OrderId 
                             td Book name
                             td Author 
                             td ISBN id
@@ -31,13 +31,16 @@ block contents
                                 td #{order.book.author}
                                 td #{order.book.ISBN}
                                 td #{order.book.publishedDate}
+                            
+                                td.delete-column
+                                    if order.orderId
+                                        form(action="/books/orders/get-booking-invoice" method="POST")
+                                            input(type="hidden" name="_csrf" value=(csrfToken))
+                                            input(type="text" value=(order.orderId) name="orderId").id-element
+                                            input(type="submit" value="Get invoice").submit-btn 
                                 td.delete-column 
-                                    form(action="/books/orders/get-booking-invoice" method="POST")
-                                        input(type="hidden" name="_csrf" value=(csrfToken))
-                                        input(type="text" value=(order.orderId) name="bookingId").id-element
-                                        input(type="submit" value="Get invoice").submit-btn 
-                                td.delete-column 
-                                    form(action="/books/orders/delete-order" method="POST")
-                                        input(type="hidden" name="_csrf" value=(csrfToken))
-                                        input(type="text" value=(order.orderId) name="bookingId").id-element
-                                        input(type="submit" value="Cancel order").submit-btn 
+                                    if order.orderId
+                                        form(action="/books/orders/delete-order" method="POST")
+                                            input(type="hidden" name="_csrf" value=(csrfToken))
+                                            input(type="text" value=(order.orderId) name="orderId").id-element
+                                            input(type="submit" value="Cancel order").submit-btn 

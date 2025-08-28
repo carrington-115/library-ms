@@ -26,6 +26,7 @@
     "nodemailer": "^7.0.5",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "nodemon": "^3.1.10",
+    "pdfkit": "^0.17.1",
     "pug": "^3.0.3"
   },
   "devDependencies": {
