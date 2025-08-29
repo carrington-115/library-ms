@@ -10,6 +10,11 @@ const orderSchema = new Schema({
     type: mongoose.Types.ObjectId,
     required: true,
   },
+  blobStorageUrl: {
+    type: String,
+    required: false,
+    default: null,
+  },
 });
 
 module.exports = mongoose.model("Order", orderSchema);

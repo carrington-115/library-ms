@@ -65,15 +65,15 @@ table tbody tr{
     cursor: pointer;
 }
 
-table tbody tr .delete-column{
+table tbody tr .delete-column, table tbody tr .order-column{
     padding: 12px 15px;
 }
 
-tr .delete-column form .id-element{
+tr .delete-column form .id-element, tr .order-column form .id-element{
     display: none;
 }
 
-tr .delete-column form .submit-btn{
+tr .delete-column form .submit-btn, tr .order-column form .submit-btn{
     font-size: 16px;
     border: none;
     color: red;
@@ -84,9 +84,20 @@ tr .delete-column form .submit-btn{
     background-color: transparent;
 }
 
+tr .order-column form .submit-btn {
+    color: green;
+    border-color: green;
+    font-size: 12px;
+}
+
 tr .delete-column form .submit-btn:hover{
     color: white;
     background-color: red;
+}
+
+tr .order-column form .submit-btn:hover {
+    color: white;
+    background-color: green;
 }
 
 table tbody tr:hover{

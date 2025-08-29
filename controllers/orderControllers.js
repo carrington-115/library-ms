@@ -1,8 +1,18 @@
+require("dotenv").config();
 const Book = require("../models/Book");
 const Order = require("../models/orders");
 const Booking = require("../models/Bookings");
 const PDFDoc = require("pdfkit");
 const User = require("../models/User");
+const { Storage } = require("@google-cloud/storage");
+const path = require("path");
+
+// setting up the GCP storage bucket
+const keysFile = path.join(__dirname, "..", "key.json");
+const storage = new Storage({
+  keyFilename: keysFile,
+});
+const bucket = storage.bucket(process.env.STORAGE_BUCKET_NAME);
 
 exports.getUserOrders = (req, res, next) => {
   const { userId } = req.params;
@@ -25,6 +35,10 @@ exports.getUserOrders = (req, res, next) => {
       // make it work for multiple orders
       const bookingIds = orders.map((order) => {
         return order.bookId;
+      });
+
+      const orderStorageUrls = orders.map((order) => {
+        return order.blobStorageUrl;
       });
 
       const orderIds = orders.map((order) => {
@@ -58,6 +72,7 @@ exports.getUserOrders = (req, res, next) => {
           });
           for (let i = 0; i < updatedOrders.length; i++) {
             updatedOrders[i].orderId = orderIds[i];
+            updatedOrders[i].orderFileUrl = orderStorageUrls[i];
           }
 
           return res.render("orders", {
@@ -69,12 +84,13 @@ exports.getUserOrders = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.error(err);
       const error = new Error(err);
       error.httpStatusCode = 500;
       return next(err);
     });
 };
+
+// order post
 exports.postGetOrderInvoice = (req, res, next) => {
   const { orderId } = req.body;
   Order.findById(orderId)
@@ -91,7 +107,15 @@ exports.postGetOrderInvoice = (req, res, next) => {
                 return next("User not found");
               }
               const filename = `Invoice-${Date.now().toLocaleString()}.pdf`;
+              const storageFile = bucket.file(filename);
+
               const pdf = new PDFDoc();
+              const blobStorageStream = storageFile.createWriteStream({
+                resumable: false,
+              });
+              pdf.pipe(blobStorageStream);
+
+              // the res settings
               res.setHeader("Content-Type", "application/pdf");
               res.setHeader(
                 "Content-Disposition",
@@ -109,6 +133,34 @@ exports.postGetOrderInvoice = (req, res, next) => {
               pdf.fontSize(16).text(`Books total: ${b_cart.length}`);
               pdf.pipe(res);
               pdf.end();
+
+              // writing the generated pdf to gcp storage
+              blobStorageStream.on("finish", () => {
+                storageFile.makePublic();
+                const publicUrl = `https://storage.googleapis.com/${bucket.name}/${storageFile.name}`;
+                console.log(
+                  "Upload finished successfully on this link:",
+                  publicUrl
+                );
+
+                Order.findById(orderId)
+                  .then((order) => {
+                    return order.updateOne({
+                      blobStorageUrl: publicUrl,
+                    });
+                  })
+                  .then((update) => {
+                    console.log(update);
+                  })
+                  .catch((err) => {
+                    return next(err);
+                  });
+              });
+
+              // catching any error that can occur when wrigint the file
+              blobStorageStream.on("error", () => {
+                return next(err);
+              });
             })
             .catch((err) => {
               return next(err);
