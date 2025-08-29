@@ -125,3 +125,30 @@ a, h3, h4, h5, p {
     font-size: 24px;
     color: white;
 }
+
+
+.view-area .library-view .pagination-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination-container .pagination{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pagination-container .pagination a {
+    font-size: 14px;
+    padding: 4px;
+    border: 1px solid white;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+.pagination-container .pagination a:hover, .pagination-container .pagination a.active{
+    background-color: white;
+    color: black;
+}

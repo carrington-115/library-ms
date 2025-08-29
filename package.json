@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "This file is to practice noSQL db and managing them",
   "dependencies": {
+    "@google-cloud/storage": "^7.17.0",
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "connect-mongodb-session": "^5.0.0",

@@ -3,26 +3,47 @@ const Bookings = require("../models/Bookings");
 const moment = require("moment");
 
 exports.getAllBooks = (req, res, next) => {
-  return Book.find()
-    .then((books) => {
-      if (books.length === 0) {
-        return res.render("index", {
-          title: "All available books",
-          path: "/books",
-          books: null,
-          noBooks: true,
-          cart: req?.user?.cart,
-        });
-      }
-      res.render("index", {
-        title: "All available books",
-        path: "/books",
-        books: books,
-        noBooks: false,
-        cart: req?.user?.cart,
-      });
+  const { page } = req.query;
+  const booksPerPage = 10;
+  Book.find()
+    .countDocuments()
+    .then((total) => {
+      return total;
     })
-    .catch((err) => console.error(err));
+    .then((totalBooks) => {
+      Book.find()
+        .limit((page - 1) * booksPerPage)
+        .then((books) => {
+          if (books.length === 0) {
+            return res.render("index", {
+              title: "All available books",
+              path: "/books",
+              books: null,
+              noBooks: true,
+              cart: req?.user?.cart,
+            });
+          }
+          const finalPage = Math.ceil(totalBooks / booksPerPage);
+          res.render("index", {
+            title: "All available books",
+            path: "/books",
+            books: books,
+            noBooks: false,
+            cart: req?.user?.cart,
+            pagination: {
+              pageNext: page === 1 && page < finalPage,
+              pagePrev: page > 1,
+              totalPages: Math.ceil(finalPage),
+              page: page,
+              nextPage: page + 1,
+              prevPage: page - 1,
+            },
+          });
+        });
+    })
+    .catch((err) => {
+      return next(err);
+    });
 };
 
 exports.getProcessBookRegistration = (req, res, next) => {

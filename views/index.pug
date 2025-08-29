@@ -29,4 +29,12 @@ block contents
                                     h5 #{book.author}
                                     p.rating 4.5/5.0 Rating
 
+                section.pagination-container 
+                    .pagination
+                        if pagePrev
+                            a(href="" class="active") #{pagination.prevPage} 
+                        a(href="" class="active") #{pagination.page}
+                        if pageNext
+                            a(href="" class="active") #{pageination.nextPage}
+
                 
