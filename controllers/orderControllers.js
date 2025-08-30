@@ -6,6 +6,7 @@ const PDFDoc = require("pdfkit");
 const User = require("../models/User");
 const { Storage } = require("@google-cloud/storage");
 const path = require("path");
+const { sendPdfWithUrl } = require("../util/waba");
 
 // setting up the GCP storage bucket
 const keysFile = path.join(__dirname, "..", "key.json");
@@ -142,6 +143,14 @@ exports.postGetOrderInvoice = (req, res, next) => {
                   "Upload finished successfully on this link:",
                   publicUrl
                 );
+                const recipient = "+919696014751";
+                sendPdfWithUrl(recipient, publicUrl, storageFile.name)
+                  .then((result) => {
+                    console.log(result);
+                  })
+                  .catch((err) => {
+                    console.error(err);
+                  });
 
                 Order.findById(orderId)
                   .then((order) => {
